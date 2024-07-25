@@ -5,8 +5,12 @@ namespace TrafficSystem
     [CreateAssetMenu(fileName = "TrafficLightConfig", menuName = "TrafficSystem/TrafficLightConfig")]
     public class TrafficLightConfig : ScriptableObject
     {
-        public float redAmberDuration = 1f;
-        public float amberDuration = 2f;
-        public float greenDuration = 3f;
+        [SerializeField] private float redAmberDuration = 1f;
+        [SerializeField] private float amberDuration = 2f;
+        [SerializeField] private float greenDuration = 3f;
+        
+        public float RedAmberDuration => redAmberDuration;
+        public float AmberDuration => amberDuration;
+        public float GreenDuration => greenDuration;
     }
 }

@@ -22,5 +22,23 @@ namespace TrafficSystem
                 }
             }
         }
+
+        public TrafficLight GetTrafficLightByDirection(Vector3 characterForward)
+        {
+            var minDotProduct = 1f;
+            TrafficLight result = null;
+            
+            foreach (var trafficLight in trafficLights)
+            {
+                var dotProduct = Vector3.Dot(trafficLight.transform.forward, characterForward);
+                if (dotProduct < minDotProduct && dotProduct < -0.5f)
+                {
+                    minDotProduct = dotProduct;
+                    result = trafficLight;
+                }
+            }
+            
+            return result;
+        }
     }
 }

@@ -10,8 +10,7 @@ namespace TrafficSystem
     {
         Red = 1 << 0,
         Yellow = 1 << 1,
-        Green = 1 << 2,
-        RedAmber = Red | Yellow
+        Green = 1 << 2
     }
 
     public class TrafficLight : MonoBehaviour
@@ -20,25 +19,30 @@ namespace TrafficSystem
         public GameObject redLight;
         public GameObject yellowLight;
         public GameObject greenLight;
-
         public UnityEvent onTurnRed;
 
         private TrafficLightState currentState;
         private Coroutine trafficLightCoroutine;
+
         public TrafficLightState CurrentState
         {
             get => currentState;
             set
             {
+                if (currentState == value) return;
+
                 currentState = value;
                 SetLights(value);
+
+                OnStateChanged?.Invoke(value);
             }
         }
 
+        public event Action<TrafficLightState> OnStateChanged;
 
         public void ToGreen()
         {
-            CurrentState = TrafficLightState.RedAmber;
+            CurrentState = TrafficLightState.Red | TrafficLightState.Yellow;
             StartCycle();
         }
 
@@ -54,16 +58,16 @@ namespace TrafficSystem
             {
                 switch (CurrentState)
                 {
-                    case TrafficLightState.RedAmber:
-                        yield return new WaitForSeconds(config.redAmberDuration);
+                    case TrafficLightState.Red | TrafficLightState.Yellow:
+                        yield return new WaitForSeconds(config.RedAmberDuration);
                         CurrentState = TrafficLightState.Green;
                         break;
                     case TrafficLightState.Green:
-                        yield return new WaitForSeconds(config.greenDuration);
+                        yield return new WaitForSeconds(config.GreenDuration);
                         CurrentState = TrafficLightState.Yellow;
                         break;
                     case TrafficLightState.Yellow:
-                        yield return new WaitForSeconds(config.amberDuration);
+                        yield return new WaitForSeconds(config.AmberDuration);
                         CurrentState = TrafficLightState.Red;
                         break;
                     case TrafficLightState.Red:
